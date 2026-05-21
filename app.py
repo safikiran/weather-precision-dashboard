@@ -34,7 +34,7 @@ def fetch_weather_matrix(latitude, longitude):
     try:
         response = requests.get(url, params=params, timeout=10)
         res_json = response.json()
-        
+
         # VALIDATION GATEWAY: If 'hourly' isn't in the keys, Open-Meteo sent an explicit error payload
         if "hourly" not in res_json:
             st.sidebar.error(f"API Warning: {res_json.get('reason', 'Rate limited or network drop')}")
@@ -51,7 +51,7 @@ if raw_data is None:
     st.warning("⚠️ API connection threshold reached. Displaying mathematically simulated thermodynamic data canvas.")
     base_time = datetime.now()
     times = [base_time + timedelta(hours=i) for i in range(48)]
-    
+
     # Simulate a realistic local diurnal barometric and temperature wave signature
     np.random.seed(42)
     temps = 28 + 6 * np.sin(np.arange(48) * (2 * np.pi / 24) - np.pi/2) + np.random.normal(0, 0.5, 48)
@@ -60,7 +60,7 @@ if raw_data is None:
     pop = np.random.choice([10, 20, 65, 80], size=48, p=[0.4, 0.3, 0.2, 0.1])
     precip = [0.0 if p < 50 else round(np.random.uniform(0.5, 6.0), 2) for p in pop]
     gusts = [12.0 if p < 50 else round(np.random.uniform(30.0, 55.0), 1) for p in pop]
-    
+
     df_live = pd.DataFrame({
         "Timestamp": pd.to_datetime(times),
         "Temp_C": temps,
